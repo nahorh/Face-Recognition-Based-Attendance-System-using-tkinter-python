@@ -134,7 +134,8 @@ def main_function():
 
                 # left frame button functions
                 def send_email():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     # adminTasksWindow.attributes('-topmost',True)
                     print('Send email invoked')
                     filetype=(('csv files','*.csv'),('All files','*.*'))
@@ -146,13 +147,14 @@ def main_function():
                     #     # print(file)
                         if fileDialog=='':
                             messagebox.showinfo('No File Selected','You selected no file for notifying the attendance')
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
+                            adminTasksWindow.attributes('disabled',False)
                             return
                         file=pd.read_csv(fileDialog)
                         file=pd.DataFrame(file)
                         stuEmails=file['StudentEmail']
                         try:
-                            with open('smtpcred.txt','r') as file:
+                            with open(os.path.join(root_path,'smtpcred.txt'),'r') as file:
                                 cred=file.read()
                                 cred=str(cred)
                                 # print(cred)
@@ -163,19 +165,22 @@ def main_function():
                             adminPwd=adminPwd.replace(' ','')
                         except:
                             messagebox.showerror('SMTP credentials error','Please check the "smtpcred.txt" file is in the root path of application. Please make sure that {username,password} are included in the file')
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
+                            adminTasksWindow.attributes('-disabled',False)
                             return
                         try:
                             server=smtplib.SMTP_SSL('smtp.gmail.com',465)
                         except:
                             messagebox.showerror('Server Setup Error','Unable to create instance of SMTP server. Please try again.')
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
+                            adminTasksWindow.attributes('-disabled',False)
                             return
                         try:
                             server.login(adminEmail,adminPwd)
                         except:
                             messagebox.showerror('Login Error','Unable to login in to email account due to incorrect credentials or bad internet connection.')
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
+                            adminTasksWindow.attributes('-disabled',False)
                             return
                         for stuEmail in stuEmails:
                             file=pd.read_csv(fileDialog)
@@ -219,16 +224,20 @@ def main_function():
                                 server.send_message(msg2)
                             except:
                                 messagebox.showerror('Message Not Sent','Unable to send message. Server busy. Please try again.')
-                                adminTasksWindow.deiconify()
+                                # adminTasksWindow.deiconify()
+                                adminTasksWindow.attributes('-disabled',False)
                                 return
                         server.quit()
                         messagebox.showinfo('Email Sent','Email sent successfully to all present students and their respective parents')
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
                     else:
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
 
                 def TrainImages():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     try:
                         recognizer = cv2.face.LBPHFaceRecognizer_create()
                         print(recognizer)
@@ -246,7 +255,9 @@ def main_function():
                     except Exception as e:
                         print(e)
                         messagebox.showerror('Recognizer object creation error','Currently there are no images in the system for training model.')
-                    adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
+                    # adminTasksWindow.deiconify()
+                    adminTasksWindow.attributes('-disabled',False)
 
                 def viewExcelFile():
                     fileType=(('csv files','*.csv'),('all files','*.*'))
@@ -273,7 +284,8 @@ def main_function():
 
                 # middle frame button functions
                 def initialize():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     def AttendanceDir():
                         if not os.path.exists(os.path.join(root_path,'Attendance')):
                             print(os.path.join(root_path,'Attendance'))
@@ -302,32 +314,38 @@ def main_function():
                     ModelDir()
                     TrainingImageDir()
                     messagebox.showinfo('Initializatio Successful','Everything initialized successfully')
-                    adminTasksWindow.deiconify()
+                    # adminTasksWindow.deiconify()
+                    adminTasksWindow.attributes('-disabled',False)
 
                 def markAttendance():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     try:
                         cam = cv2.VideoCapture(0)
                         cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
                         cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
                     except:
                         messagebox.showerror('Camera access error','Please check that camera privacy settings have enabled camera access for applications')
+                        adminTasksWindow.attributes('-disabled',False)
                         return
                     try:
                         recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
                     except:
                         messagebox.showerror('Recognizer object creation error','Please check that you have "opencv-contrib-python" installed on your system. If not then run this command in cmd "pip install opencv-contrib-python"')
+                        adminTasksWindow.attributes('-disabled',False)
                         return
                     try:
                         recognizer.read("Model/model.yml")
                     except:
                         messagebox.showerror('Model not readable','The trained model is either deleted from the system or unable to access. Please try again by trainig the model again.')
+                        adminTasksWindow.attributes('-disabled',False)
                         return
                     harcascadePath = os.path.join(root_path,"haarcascade_frontalface_default.xml")
                     try:
                         faceCascade = cv2.CascadeClassifier(harcascadePath)
                     except:
                         messagebox.showerror('Haar XML file not found','Please check that the "haarcascade_frontalface_default.xml" file is present at the location of exe file')
+                        adminTasksWindow.attributes('-disabled',False)
                         return
                     df = pd.read_csv("StudentDetails/StudentDetails.csv")
                     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -340,6 +358,7 @@ def main_function():
                             faces = faceCascade.detectMultiScale(gray, 1.3, 5)
                         except:
                             messagebox.showerror('Haar XML file not found','Please check that the "haarcascade_frontalface_default.xml" file is present at the location of exe file')
+                            adminTasksWindow.attributes('-disabled',False)
                             return
                         for(x, y, w, h) in faces:
                             cv2.rectangle(im, (x, y), (x+w, y+h), (225, 0, 0), 2)
@@ -374,7 +393,8 @@ def main_function():
                     Hour, Minute, Second = timeStamp.split(":")
                     fileName = "Attendance/Attendance_"+date+"_"+Hour+"-"+Minute+"-"+Second+".csv"
                     attendance.to_csv(fileName, index=False)
-                    adminTasksWindow.deiconify()
+                    # adminTasksWindow.deiconify()
+                    adminTasksWindow.attributes('-disabled',False)
 
 
                 def viewStudentDataFile():
@@ -391,7 +411,8 @@ def main_function():
 
                 # right frame button functions
                 def reset_all():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     print('reset all invoked')
                     proceed=messagebox.askyesno('Reset everything','This will delete all the data associated with this system and can\'t be undone. Are you sure ?')
                     if proceed:
@@ -439,12 +460,15 @@ def main_function():
                             pass
                         messagebox.showinfo('Reset Successful','Everything deleted from the system successfully')
                         pass
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
                     else:
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
 
                 def deleteModel():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     print('deleteModel invoked')
                     proceed=messagebox.askyesno('Delete Model','Are you sure you want to delete the trained model ? This cannot be undone')
                     # delete trained model
@@ -454,17 +478,20 @@ def main_function():
                             os.mkdir(os.path.join(root_path,'Model'))
                         except:
                             os.mkdir(os.path.join(root_path,'Model'))
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
                             # messagebox.showerror('No Model Found Error','No trained model exists in the system')
                             pass
                         messagebox.showinfo('Model Deleted','Model deleted successfully')
                         pass
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
                     else:
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
 
                 def deleteAllStudentData():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     print('deleteAllStudentData invoked')
                     proceed=messagebox.askyesno('Delete All Student Record','Are you sure you want to clear all student records ? This cannot be undone')
                     if proceed:
@@ -481,7 +508,7 @@ def main_function():
                                     writer.writerow(row)
                         except:
                             os.mkdir(os.path.join(root_path,'StudentDetails'))
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
                             if not os.path.isfile(os.path.join(root_path,'StudentDetails/StudentDetails.csv')):
                                 StudentDetailsFilePath=os.path.join(root_path,'StudentDetails\\StudentDetails.csv')
                                 # print(StudentDetailsFilePath)
@@ -496,14 +523,17 @@ def main_function():
                             os.mkdir(os.path.join(root_path,'TrainingImage'))
                         except:
                             os.mkdir(os.path.join(root_path,'TrainingImage'))
-                            adminTasksWindow.deiconify()
+                            # adminTasksWindow.deiconify()
                             pass
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
                     else:
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
 
                 def deleteAllAttendanceFiles():
-                    adminTasksWindow.withdraw()
+                    # adminTasksWindow.withdraw()
+                    adminTasksWindow.attributes('-disabled',True)
                     print('deleteAllAttendanceFiles invoked')
                     proceed=messagebox.askyesno('Delete All Attendance Record','Are you sure you want to clear all attendance records ? This cannot be undone')
                     if proceed:
@@ -515,9 +545,11 @@ def main_function():
                             os.mkdir(os.path.join(root_path,'Attendance'))
                             pass
                         messagebox.showinfo('All Attendance Cleared','All attendance files cleared successfully from the system')
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
                     else:
-                        adminTasksWindow.deiconify()
+                        # adminTasksWindow.deiconify()
+                        adminTasksWindow.attributes('-disabled',False)
 
                 # defining the window button functions
                 def goBack():
@@ -641,29 +673,34 @@ def main_function():
                             studentTaskWindow.destroy()
 
                         def markAttendance():
-                            studentTaskWindow.withdraw()
+                            # studentTaskWindow.withdraw()
+                            studentTaskWindow.attributes('-disabled',True)
                             try:
                                 cam = cv2.VideoCapture(0)
                                 cam.set(cv2.CAP_PROP_FRAME_WIDTH,640)
                                 cam.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
                             except:
                                 messagebox.showerror('Camera access error','Please check that camera privacy settings have enabled camera access for applications')
+                                studentTaskWindow.attributes('-disabled',False)
                                 return
                             try:
                                 recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
                             except:
-                                messagebox.showerror('Recognizer object creation error','Please check that you have "opencv-contrib-python" installed on your system. If not then run this command in cmd "pip install opencv-contrib-python"')
+                                messagebox.showerror('Recognizer object creation error','Unable to create recognizer object for loading trained model')
+                                studentTaskWindow.attributes('-disabled',False)
                                 return
                             try:
                                 recognizer.read("Model/model.yml")
                             except:
                                 messagebox.showerror('Model not readable','The trained model is either deleted from the system or unable to access. Please try again by trainig the model again.')
+                                studentTaskWindow.attributes('-disabled',False)
                                 return
-                            harcascadePath = "haarcascade_frontalface_default.xml"
+                            harcascadePath = os.path.join(root_path,"haarcascade_frontalface_default.xml")
                             try:
                                 faceCascade = cv2.CascadeClassifier(harcascadePath)
                             except:
                                 messagebox.showerror('Haar XML file not found','Please check that the "haarcascade_frontalface_default.xml" file is present at the location of exe file')
+                                studentTaskWindow.attributes('-disabled',False)
                                 return
                             df = pd.read_csv("StudentDetails/StudentDetails.csv")
                             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -676,6 +713,7 @@ def main_function():
                                     faces = faceCascade.detectMultiScale(gray, 1.3, 5)
                                 except:
                                     messagebox.showerror('Haar XML file not found','Please check that the "haarcascade_frontalface_default.xml" file is present at the location of exe file')
+                                    studentTaskWindow.attributes('-disabled',False)
                                     return
                                 for(x, y, w, h) in faces:
                                     cv2.rectangle(im, (x, y), (x+w, y+h), (225, 0, 0), 2)
@@ -703,6 +741,7 @@ def main_function():
                                     cam.release()
                                     cv2.destroyAllWindows()
                                     messagebox.showinfo('Attendance Marked','Attendance of the recognized students has been marked successfully')
+                                    studentTaskWindow.attributes('-disabled',False)
                                     break
                             ts = time.time()
                             date = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
@@ -710,7 +749,7 @@ def main_function():
                             Hour, Minute, Second = timeStamp.split(":")
                             fileName = "Attendance/Attendance_"+date+"_"+Hour+"-"+Minute+"-"+Second+".csv"
                             attendance.to_csv(fileName, index=False)
-                            studentTaskWindow.deiconify()
+                            # studentTaskWindow.deiconify()
 
                         studentTaskWindow=Toplevel(signinWindow)
                         studentTaskWindow.protocol('WM_DELETE_WINDOW',disableButton)
@@ -776,7 +815,6 @@ def main_function():
         signinWindow.grab_set()
         signinWindow.title("Face Recognition Attendance System")
         signinWindow.configure(background='white')
-        signinWindow.protocol('WM_DELETE_WINDOW',disableButton)
         window_width = 800
         window_height = 400
 
@@ -906,9 +944,13 @@ def main_function():
             except Exception as e:
                 print(e)
                 messagebox.showerror('Recognizer object creation error','Please check that you have "opencv-contrib-python" installed on your system. If not then run this command in cmd "pip install opencv-contrib-python"')
+                # signUpWindow.deiconify()
+                signUpWindow.attributes('-disabled',False)
+                return
 
         def TakeImages():
-            signUpWindow.withdraw()
+            # signUpWindow.withdraw()
+            signUpWindow.attributes('-disabled',True)
             Id = (txt.get())
             name = (txt2.get())
             student_email=txt3.get()
@@ -931,6 +973,8 @@ def main_function():
                     signUpWindow.deiconify()
                     return
                 sampleNum = 0
+                signUpWindow.withdraw()
+                signUpWindow.attributes('-disabled',False)
                 while(True):
                     ret, img = cam.read()
                     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -939,6 +983,7 @@ def main_function():
                     except:
                         tk.messagebox.showerror('Haar XML file not found','Please check that the "haarcascade_frontalface_default.xml" file is present at the location of exe file')
                         signUpWindow.deiconify()
+                        return
                     for (x, y, w, h) in faces:
                         cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
                         # incrementing sample number
@@ -953,10 +998,12 @@ def main_function():
                         sampleNum = sampleNum+1
                         imgpath=os.path.join(root_path,f'TrainingImage/{name}.{Id}.{sampleNum}.jpg')
                         cv2.imwrite(imgpath, gray[y:y+h, x:x+w])
-                    if cv2.waitKey(1)==ord('q') or cv2.waitKey(1)==ord('Q'):
-                        cam.release()
-                        cv2.destroyAllWindows()
+                    elif cv2.waitKey(1)==ord('q') or cv2.waitKey(1)==ord('Q'):
+                        # cam.release()
+                        # cv2.destroyAllWindows()
                         if sampleNum==0:
+                            cam.release()
+                            cv2.destroyAllWindows()
                             messagebox.showinfo('No image captured','No image captured from camera. Signup discarded')
                             signUpWindow.deiconify()
                             return
@@ -966,10 +1013,13 @@ def main_function():
                     #     break
                     # break if the sample number is morethan 100
                     if sampleNum > 9:
+                        # signUpWindow.deiconify()
                         break
                 # res = "Images Saved for ID : " + Id + " Name : " + name
                 cam.release()
                 cv2.destroyAllWindows()
+                signUpWindow.attributes('-disabled',True)
+                signUpWindow.deiconify()
                 row = [Id, name,student_email,parent_email]
                 with open(os.path.join(root_path,'StudentDetails/StudentDetails.csv'), 'r') as file:
                     data=file.read()
@@ -978,6 +1028,7 @@ def main_function():
                     print('user present already')
                     messagebox.showwarning('User already present',f'User {name} already exists in the database. The captured images will be replaced with the previous ones')
                     TrainImages()
+                    signUpWindow.attributes('-disabled',False)
                 else:
                     with open(os.path.join(root_path,'StudentDetails/StudentDetails.csv'), 'a+') as csvFile:
                         writer = csv.writer(csvFile)
@@ -998,39 +1049,44 @@ def main_function():
                     ''')
 
                     try:
-                        with open('smtpcred.txt','r') as file:
+                        with open(os.path.join(root_path,'smtpcred.txt'),'r') as file:
                             cred=file.read()
                             cred=str(cred)
                             # print(cred)
                         cred=cred.split(',')
                         adminEmail=cred[0]
-                        adminEmail=adminEmail.replace(' ','')
+                        # adminEmail=adminEmail.replace(' ','')
                         adminPwd=cred[1]
-                        adminPwd=adminPwd.replace(' ','')
+                        # adminPwd=adminPwd.replace(' ','')
                     except:
                         messagebox.showerror('SMTP credentials error','Please check the "smtpcred.txt" file is in the root path of application. Please make sure that {username,password} are included in the file')
-                        signUpWindow.deiconify()
+                        # signUpWindow.deiconify()
+                        signUpWindow.attributes('-disabled',False)
                         return
 
                     try:
                         server=smtplib.SMTP_SSL('smtp.gmail.com',465)
                     except:
                         messagebox.showerror('Server Setup Error','Unable to create instance of SMTP server. Please try again.')
-                        signUpWindow.deiconify()
+                        # signUpWindow.deiconify()
+                        signUpWindow.attributes('-disabled',False)
                         return
                     try:
                         server.login(adminEmail,adminPwd)
                     except:
                         messagebox.showerror('Login Error','Unable to login in to email account due to incorrect credentials or bad internet connection.')
-                        signUpWindow.deiconify()
+                        # signUpWindow.deiconify()
+                        signUpWindow.attributes('-disabled',False)
                         return
                     server.send_message(msg)
                     server.quit()
                     messagebox.showinfo('Email Sent','Your credentials have been sent to your email successfully. Kindly check that and login with the same next time')
-                    signUpWindow.deiconify()
-            elif str(Id)=='' or str(name)=='' or not is_number(Id) or not name.isalpha():
-                tk.messagebox.showerror('Value Error','Please enter correct details')
-            signUpWindow.deiconify()
+                    # signUpWindow.deiconify()
+                    signUpWindow.attributes('-disabled',False)
+            elif str(Id)=='' or str(name)=='' or not is_number(Id) or not name.isalpha() or not symbol in str(student_email) or not symbol in str(parent_email):
+                tk.messagebox.showerror('Value Error','Please enter details in correct format')
+            # signUpWindow.deiconify()
+            signUpWindow.attributes('-disabled',False)
 
         # defining the top frame
         topFrame=tk.Frame(signUpWindow,bg='yellow')
@@ -1106,7 +1162,8 @@ def main_function():
 
     def forgotPasswd():
         def sendCreds():
-            forgotPasswordWindow.withdraw()
+            # forgotPasswordWindow.withdraw()
+            forgotPasswordWindow.attributes('-disabled',True)
             uname=unameEntry.get()
             uemail=uemailLabelEntry.get()
             df=pd.read_csv(os.path.join(root_path,'StudentDetails/StudentDetails.csv'))
@@ -1116,7 +1173,8 @@ def main_function():
                 extractedId=df.loc[df['Name']==uname]['Id'].values[0]
             except:
                 messagebox.showerror('Record Not Found','No record for this user exists in the system. Please enter correct details')
-                forgotPasswordWindow.deiconify()
+                # forgotPasswordWindow.deiconify()
+                forgotPasswordWindow.attributes('-disabled',False)
                 return
             if extractedEmail==uemail:
                 # email the credentials
@@ -1144,27 +1202,33 @@ def main_function():
                     adminPwd=adminPwd.replace(' ','')
                 except:
                     messagebox.showerror('SMTP credentials error','Please check the "smtpcred.txt" file is in the root path of application. Please make sure that {username,password} are included in the file')
-                    forgotPasswordWindow.deiconify()
+                    # forgotPasswordWindow.deiconify()
+                    forgotPasswordWindow.attributes('-disabled',False)
                     return
 
                 try:
                     server=smtplib.SMTP_SSL('smtp.gmail.com',465)
                 except:
                     messagebox.showerror('Server Setup Error','Unable to create instance of SMTP server. Please try again.')
-                    forgotPasswordWindow.deiconify()
+                    # forgotPasswordWindow.deiconify()
+                    forgotPasswordWindow.attributes('-disabled',False)
                     return
                 try:
                     server.login(adminEmail,adminPwd)
                 except:
                     messagebox.showerror('Login Error','Unable to login in to email account due to incorrect credentials or bad internet connection.')
-                    forgotPasswordWindow.deiconify()
+                    # forgotPasswordWindow.deiconify()
+                    forgotPasswordWindow.attributes('-disabled',False)
+                    return
                 server.send_message(msg)
                 server.quit()
                 messagebox.showinfo('Email Sent','Your credentials have been sent to your email successfully. Kindly check that and login with the same next time')
-                forgotPasswordWindow.deiconify()
+                # forgotPasswordWindow.deiconify()
+                forgotPasswordWindow.attributes('-disabled',False)
             else:
                 messagebox.showerror('Incorrect email','Please enter the email correctly')
-                forgotPasswordWindow.deiconify()
+                # forgotPasswordWindow.deiconify()
+                forgotPasswordWindow.attributes('-disabled',False)
 
         def goBack():
             homeWindow.deiconify()
@@ -1265,11 +1329,9 @@ def main_function():
 
 if checkAdminPermissions():
     print('True')
-    # main_function()
+    main_function()
 else:
-    run=ctypes.windll.shell32.ShellExecuteW(None,'runas',sys.executable,' '.join(sys.argv),None,1)
-    # print(run)
-    if run==42:
-        main_function()
-    elif run==5:
-        sys.exit()
+    ctypes.windll.shell32.ShellExecuteW(None,'runas',sys.executable,' '.join(sys.argv),None,1)
+#     # print(run)
+#     main_function()
+# main_function()
