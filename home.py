@@ -945,15 +945,15 @@ def main_function():
                         # saving the captured face in the dataset folder TrainingImage
                         # display the frame
                         cv2.putText(img,'Press c key to capture next image',(0,40),cv2.FONT_HERSHEY_TRIPLEX,0.5,(0,0,255),1)
-                        if cv2.waitKey(1)==ord('c'):
-                            sampleNum = sampleNum+1
-                            imgpath=os.path.join(root_path,f'TrainingImage/{name}.{Id}.{sampleNum}.jpg')
-                            cv2.imwrite(imgpath, gray[y:y+h, x:x+w])
                     cv2.putText(img,'Press q to close camera',(0,20),cv2.FONT_HERSHEY_TRIPLEX,0.5,(0,0,255),1)
                     windowName=f'Image No: {sampleNum}, Name: {name}, Id:{Id}'
                     cv2.imshow(windowName, img)
                     cv2.moveWindow(windowName,15,15)
-                    if cv2.waitKey(1)==ord('q'):
+                    if cv2.waitKey(1)==ord('c') or cv2.waitKey(1)==ord('C'):
+                        sampleNum = sampleNum+1
+                        imgpath=os.path.join(root_path,f'TrainingImage/{name}.{Id}.{sampleNum}.jpg')
+                        cv2.imwrite(imgpath, gray[y:y+h, x:x+w])
+                    if cv2.waitKey(1)==ord('q') or cv2.waitKey(1)==ord('Q'):
                         cam.release()
                         cv2.destroyAllWindows()
                         if sampleNum==0:
@@ -966,10 +966,10 @@ def main_function():
                     #     break
                     # break if the sample number is morethan 100
                     if sampleNum > 9:
-                        cam.release()
-                        cv2.destroyAllWindows()
                         break
                 # res = "Images Saved for ID : " + Id + " Name : " + name
+                cam.release()
+                cv2.destroyAllWindows()
                 row = [Id, name,student_email,parent_email]
                 with open(os.path.join(root_path,'StudentDetails/StudentDetails.csv'), 'r') as file:
                     data=file.read()
@@ -1027,6 +1027,7 @@ def main_function():
                     server.send_message(msg)
                     server.quit()
                     messagebox.showinfo('Email Sent','Your credentials have been sent to your email successfully. Kindly check that and login with the same next time')
+                    signUpWindow.deiconify()
             elif str(Id)=='' or str(name)=='' or not is_number(Id) or not name.isalpha():
                 tk.messagebox.showerror('Value Error','Please enter correct details')
             signUpWindow.deiconify()
@@ -1160,6 +1161,7 @@ def main_function():
                 server.send_message(msg)
                 server.quit()
                 messagebox.showinfo('Email Sent','Your credentials have been sent to your email successfully. Kindly check that and login with the same next time')
+                forgotPasswordWindow.deiconify()
             else:
                 messagebox.showerror('Incorrect email','Please enter the email correctly')
                 forgotPasswordWindow.deiconify()
