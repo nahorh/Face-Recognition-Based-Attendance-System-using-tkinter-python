@@ -1,4 +1,4 @@
-# Face-Recognition-Based-Attendance-System-using-tkinter-python
+# Face-Recognition-Based-Attendance-System-using-tkinter-python.
 
 Please make sure that before using this system the machine is connected to the internet as it requires to send emails to users about crednetails and attendance status.
 
