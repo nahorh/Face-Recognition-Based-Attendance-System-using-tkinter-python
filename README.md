@@ -54,3 +54,20 @@ In this way this attendance system has been designed for ease in marking and vie
 This application has a setup exe file that can be installed on windows machines.
 
 So running this application will not require python as a prerequisite on any machine after installing the exe file.
+
+#NOTE:
+Before running the code do the following:
+1) create a gmail account for the attendance system that will send emails to the users.
+2) go to account setup and search for access for less secure apps.
+3) enable access to less secure apps.
+4) the account is now setup to allow python login to the account.
+5) now open smtpcred.txt file in project folder.
+6) type the gmail account name and password seperated by a comma.
+7) save the file.
+8) now, the code is able to run with all functionalities.
+
+#If code doesn't run
+create a virtual environment
+install all dependies
+install opencv-contrib-python
+then run the code in virtual environment
