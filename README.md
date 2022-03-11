@@ -67,7 +67,7 @@ Before running the code do the following:
 8) now, the code is able to run with all functionalities.
 
 # If code doesn't run
-create a virtual environment
-install all dependies
-install opencv-contrib-python
-then run the code in virtual environment
+1) create a virtual environment
+2) install all dependies
+3) install opencv-contrib-python
+4) then run the code in virtual environment
