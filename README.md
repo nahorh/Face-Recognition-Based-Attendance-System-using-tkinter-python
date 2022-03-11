@@ -55,7 +55,7 @@ This application has a setup exe file that can be installed on windows machines.
 
 So running this application will not require python as a prerequisite on any machine after installing the exe file.
 
-#NOTE:
+# NOTE:
 Before running the code do the following:
 1) create a gmail account for the attendance system that will send emails to the users.
 2) go to account setup and search for access for less secure apps.
@@ -66,7 +66,7 @@ Before running the code do the following:
 7) save the file.
 8) now, the code is able to run with all functionalities.
 
-#If code doesn't run
+# If code doesn't run
 create a virtual environment
 install all dependies
 install opencv-contrib-python
